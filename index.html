@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Roomfit" />
+    <meta name="theme-color" content="#0b0b0c" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <title>Roomfit AR</title>
+  </head>
+  <body>
+    <div id="app">
+      <video id="cam" playsinline muted autoplay></video>
+      <canvas id="gl"></canvas>
+      <canvas id="scan"></canvas>
+
+      <div id="reticle" class="reticle"><div class="ring"></div><div class="dot"></div></div>
+
+      <header class="topbar">
+        <div class="brand"><span class="brand-mark"></span>Roomfit</div>
+        <div class="top-actions">
+          <button id="btnScan" class="icon-btn on" aria-label="Toggle scan view">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3"/><path d="M4 12h16"/></svg>
+          </button>
+          <button id="btnSettings" class="icon-btn" aria-label="Settings">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <div id="hint" class="hint info"><span class="hint-dot"></span><span id="hintText">Starting…</span></div>
+
+      <section class="sheet">
+        <div id="panelWall" class="panel hidden">
+          <p class="panel-title">Scan a wall</p>
+          <p class="panel-sub">Stand in one spot. Put the circle on the line where the wall meets the floor, then lock it.</p>
+          <div class="actions">
+            <button id="btnWallBack" class="btn ghost hidden">Back</button>
+            <button id="btnLock" class="btn primary">Lock wall</button>
+          </div>
+        </div>
+
+        <div id="panelPlace" class="panel hidden">
+          <div id="tray" class="tray"></div>
+          <div class="actions">
+            <button id="btnAddWall" class="btn ghost">+ Wall</button>
+            <button id="btnMeasure" class="btn ghost">Measure</button>
+            <button id="btnPlace" class="btn primary">Place</button>
+          </div>
+        </div>
+
+        <div id="panelMeasure" class="panel hidden">
+          <p class="panel-title">Measure a space</p>
+          <p id="measureSub" class="panel-sub">Aim at the floor by the left edge of the open space.</p>
+          <div class="actions">
+            <button id="btnMeasureCancel" class="btn ghost">Cancel</button>
+            <button id="btnMark" class="btn primary">Mark left edge</button>
+          </div>
+        </div>
+
+        <div id="panelSelected" class="panel hidden">
+          <p id="selTitle" class="panel-title">Item</p>
+          <p id="selSub" class="panel-sub"></p>
+          <div class="actions">
+            <button id="btnRemove" class="btn danger">Remove</button>
+            <button id="btnQuickLook" class="btn ghost">View in AR</button>
+            <button id="btnDone" class="btn primary">Done</button>
+          </div>
+        </div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+
+      <div id="settings" class="modal hidden">
+        <div class="modal-card">
+          <p class="panel-title">Settings</p>
+          <label class="field">
+            <span>Phone height from floor <b id="valHeight"></b></span>
+            <input id="inHeight" type="range" min="0.8" max="1.9" step="0.01" />
+            <small>How high you hold the phone. Used to work out distances. Re-lock walls after changing.</small>
+          </label>
+          <label class="field">
+            <span>Camera field of view <b id="valFov"></b></span>
+            <input id="inFov" type="range" min="50" max="85" step="0.5" />
+            <small>If objects slide when you turn, nudge this until they stay pinned.</small>
+          </label>
+          <label class="field">
+            <span>Scan sensitivity <b id="valSens"></b></span>
+            <input id="inSens" type="range" min="0" max="1" step="0.05" />
+            <small>Higher = treats more of the wall as occupied.</small>
+          </label>
+          <div class="actions">
+            <button id="btnReset" class="btn danger">Clear room</button>
+            <button id="btnCloseSettings" class="btn primary">Done</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="intro" class="intro">
+        <div class="intro-card">
+          <div class="intro-mark"></div>
+          <h1>Roomfit</h1>
+          <p class="lede">Try clocks, paintings and furniture in your room before you buy or move anything.</p>
+          <ol class="steps">
+            <li><b>Stand in one spot.</b> Turn to look around, but don't walk.</li>
+            <li><b>Lock a wall</b> by aiming at where it meets the floor.</li>
+            <li><b>Pick an object</b> and place it. Roomfit checks whether it fits.</li>
+          </ol>
+          <button id="btnStart" class="btn primary wide">Start camera</button>
+          <p id="introError" class="intro-error"></p>
+          <button id="btnNoCam" class="btn link hidden">Continue without camera</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
